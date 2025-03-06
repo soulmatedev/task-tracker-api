@@ -23,8 +23,17 @@
    DB_DATABASE=task_tracker
    DB_USERNAME=postgres
    DB_PASSWORD=000123000
+
+   JWT_SECRET=oj4aiG0lEwM3XlZxs8P4ccRC8f8cox4xCi0tZkXNCZ61PdlAstw64usI3GIPW4XM
    ```
-4. Запустите сервер:
+4. Сгенерируйте ключ:
+   ```
+   php artisan jwt:secret  
+   ```
+
+5 Запустите сервер:
     ```bash
-    php artisan serve
+    composer serve
     ```
+
+   
