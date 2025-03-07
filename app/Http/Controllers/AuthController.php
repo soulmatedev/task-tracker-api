@@ -30,7 +30,10 @@ class AuthController extends Controller
             'role' => 0
         ]);
 
-        return response()->json(['message' => 'User registered successfully'], 201);
+        return response()->json([
+            'message' => 'User registered successfully',
+            'id' => $user->id
+        ], 201);
     }
 
     public function login(Request $request)
@@ -41,9 +44,12 @@ class AuthController extends Controller
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
 
+        $user = auth()->user();
+
         return response()->json([
             'access_token' => $token,
             'refresh_token' => $token,
+            'id' => $user->id
         ]);
     }
 
