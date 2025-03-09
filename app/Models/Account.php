@@ -7,7 +7,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class Account extends Authenticatable implements JWTSubject
 {
-    protected $table = 'Account';
+    protected $table = "Account";
 
     protected $primaryKey = 'id';
     public $incrementing = true;
@@ -23,5 +23,10 @@ class Account extends Authenticatable implements JWTSubject
 
     public function getJWTCustomClaims() {
         return [];
+    }
+
+    public function assignedProjects()
+    {
+        return $this->belongsToMany(Project::class, 'ProjectAccount', 'accountId', 'projectId');
     }
 }

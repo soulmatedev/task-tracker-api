@@ -26,9 +26,9 @@ CREATE TABLE "Project" (
 );
 
 CREATE TABLE "ProjectAccount" (
-                           "id" SERIAL PRIMARY KEY,
-                           "projectId" INTEGER NOT NULL,
-                           "accountId" INTEGER NOT NULL
+                                  "id" SERIAL PRIMARY KEY,
+                                  "projectId" INTEGER NOT NULL,
+                                  "accountId" INTEGER NOT NULL
 );
 
 CREATE TABLE "Task" (

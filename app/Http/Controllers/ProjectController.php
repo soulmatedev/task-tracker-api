@@ -27,7 +27,7 @@ class ProjectController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'assignedAccounts' => 'sometimes|array',
-            'assignedAccounts.*' => 'integer|exists:account,id',
+            'assignedAccounts.*' => 'integer|exists:Account,id',
         ]);
 
 
@@ -37,6 +37,8 @@ class ProjectController extends Controller
             'createdBy' => $user->id,
             'createdAt' => $request->has('createdAt') ? $request->createdAt : now(),
         ]);
+
+        $project->assignedAccounts()->sync([$user->id]);
 
         return response()->json($project->load('assignedAccounts'), 201);
     }
@@ -67,5 +69,14 @@ class ProjectController extends Controller
         }
 
         return response()->json($project->load('assignedAccounts'), 200);
+    }
+
+    public function getProjectsByAccountId($accountId)
+    {
+        $account = Account::findOrFail($accountId);
+
+        $projects = $account->assignedProjects()->with('creator')->get();
+
+        return response()->json($projects, 200);
     }
 }

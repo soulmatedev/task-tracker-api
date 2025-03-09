@@ -46,6 +46,8 @@ class AuthController extends Controller
 
         $user = auth()->user();
 
+
+
         return response()->json([
             'access_token' => $token,
             'refresh_token' => $token,
@@ -56,5 +58,11 @@ class AuthController extends Controller
     public function getUser()
     {
         return response()->json(auth()->user());
+    }
+
+    public function getAllUsers()
+    {
+        $users = Account::all();
+        return response()->json(['accounts' => $users], 200);
     }
 }
