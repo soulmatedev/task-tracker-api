@@ -27,9 +27,9 @@ class ProjectController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'assignedAccounts' => 'sometimes|array',
-            'assignedAccounts.*' => 'integer|exists:Account,id',
+            'assignedAccounts.*.id' => 'required|integer|exists:Account,id',
+            'assignedAccounts.*.login' => 'required|string|max:255',
         ]);
-
 
         $project = Project::create([
             'name' => $request->name,
@@ -38,7 +38,14 @@ class ProjectController extends Controller
             'createdAt' => $request->has('createdAt') ? $request->createdAt : now(),
         ]);
 
-        $project->assignedAccounts()->sync([$user->id]);
+        $assignedAccounts = collect($request->assignedAccounts ?? []);
+        $assignedAccounts->push([
+            'id' => $user->id,
+            'login' => $user->login,
+        ]);
+
+        $assignedAccountsIds = $assignedAccounts->pluck('id');
+        $project->assignedAccounts()->sync($assignedAccountsIds);
 
         return response()->json($project->load('assignedAccounts'), 201);
     }
@@ -57,15 +64,16 @@ class ProjectController extends Controller
             'name' => 'sometimes|string|max:255',
             'description' => 'sometimes|string',
             'assignedAccounts' => 'sometimes|array',
-            'assignedAccounts.*' => 'integer|exists:account,id',
+            'assignedAccounts.*.id' => 'required|integer|exists:Account,id',
+            'assignedAccounts.*.login' => 'required|string|max:255',
         ]);
 
         $project = Project::findOrFail($id);
         $project->update($request->only(['name', 'description']));
 
         if ($request->has('assignedAccounts')) {
-            $assignedAccounts = Account::whereIn('id', $request->assignedAccounts)->get();
-            $project->assignedAccounts()->sync($assignedAccounts);
+            $assignedAccountsIds = collect($request->assignedAccounts)->pluck('id');
+            $project->assignedAccounts()->sync($assignedAccountsIds);
         }
 
         return response()->json($project->load('assignedAccounts'), 200);
@@ -78,5 +86,14 @@ class ProjectController extends Controller
         $projects = $account->assignedProjects()->with('creator')->get();
 
         return response()->json($projects, 200);
+    }
+
+    public function getAssignedAccounts($projectId)
+    {
+        $project = Project::findOrFail($projectId);
+
+        $assignedAccounts = $project->assignedAccounts()->get(['Account.id', 'Account.login']);
+
+        return response()->json($assignedAccounts, 200);
     }
 }

@@ -26,7 +26,8 @@ class Project extends Model
 
     public function assignedAccounts()
     {
-        return $this->belongsToMany(Account::class, 'ProjectAccount', 'projectId', 'accountId');
+        return $this->belongsToMany(Account::class, 'ProjectAccount', 'projectId', 'accountId')
+            ->withPivot('accountId', 'projectId');
     }
 
     protected $casts = [

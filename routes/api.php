@@ -16,5 +16,6 @@ Route::prefix('project')->group(function () {
     Route::delete('/{id}', [ProjectController::class, 'delete']);
     Route::put('/{id}', [ProjectController::class, 'update']);
     Route::get('/{accountId}', [ProjectController::class, 'getProjectsByAccountId']);
+    Route::get('/assigned-accounts/{projectId}', [ProjectController::class, 'getAssignedAccounts']);
 });
 
