@@ -25,6 +25,11 @@ class Account extends Authenticatable implements JWTSubject
         return [];
     }
 
+    public function assignedTasks()
+    {
+        return $this->hasMany(Task::class, 'assignedTo');
+    }
+
     public function assignedProjects()
     {
         return $this->belongsToMany(Project::class, 'ProjectAccount', 'accountId', 'projectId');

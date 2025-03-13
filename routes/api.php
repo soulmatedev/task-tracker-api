@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
@@ -18,4 +19,12 @@ Route::prefix('project')->group(function () {
     Route::get('/{accountId}', [ProjectController::class, 'getProjectsByAccountId']);
     Route::get('/assigned-accounts/{projectId}', [ProjectController::class, 'getAssignedAccounts']);
 });
+
+Route::prefix('task')->group(function () {
+    Route::post('/create', [TaskController::class, 'create']);
+    Route::put('/{id}', [TaskController::class, 'update']);
+    Route::delete('/{id}', [TaskController::class, 'delete']);
+    Route::get('/statuses', [TaskController::class, 'getStatuses']);
+});
+
 

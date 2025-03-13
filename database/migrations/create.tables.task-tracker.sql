@@ -39,9 +39,7 @@ CREATE TABLE "Task" (
                         "createdBy" INTEGER NOT NULL REFERENCES "Account"("id") ON DELETE SET NULL,
                         "assignedTo" INTEGER REFERENCES "Account"("id") ON DELETE SET NULL,
                         "dueDate" TIMESTAMP NULL,
-                        "status" INTEGER NULL REFERENCES "Status"("id"),
-                        "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        "status" INTEGER NULL REFERENCES "Status"("id")
 );
 
 ALTER TABLE "ProjectAccount"

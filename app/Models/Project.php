@@ -30,6 +30,11 @@ class Project extends Model
             ->withPivot('accountId', 'projectId');
     }
 
+    public function tasks()
+    {
+        return $this->hasMany(Task::class, 'projectId');
+    }
+
     protected $casts = [
         'createdAt' => 'datetime',
     ];
