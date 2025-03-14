@@ -25,6 +25,7 @@ Route::prefix('task')->group(function () {
     Route::put('/{id}', [TaskController::class, 'update']);
     Route::delete('/{id}', [TaskController::class, 'delete']);
     Route::get('/statuses', [TaskController::class, 'getStatuses']);
+    Route::get('/assigned/{accountId}', [TaskController::class, 'getTasksByAssignedTo']);
 });
 
 
