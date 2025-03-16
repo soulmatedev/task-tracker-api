@@ -12,6 +12,7 @@ class Task extends Model
         'title', 'description', 'projectId', 'createdBy', 'assignedTo', 'dueDate', 'status',
     ];
 
+
     public $timestamps = false;
 
     public function project()
@@ -19,7 +20,7 @@ class Task extends Model
         return $this->belongsTo(Project::class, 'projectId');
     }
 
-    public function assignedTo()
+    public function assignedToAccount()
     {
         return $this->belongsTo(Account::class, 'assignedTo');
     }

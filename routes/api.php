@@ -26,6 +26,7 @@ Route::prefix('task')->group(function () {
     Route::delete('/{id}', [TaskController::class, 'delete']);
     Route::get('/statuses', [TaskController::class, 'getStatuses']);
     Route::get('/assigned/{accountId}', [TaskController::class, 'getTasksByAssignedTo']);
+    Route::get('/without-current-user', [TaskController::class, 'getTasksWithoutCurrentUser']);
 });
 
 

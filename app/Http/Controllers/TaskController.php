@@ -30,7 +30,9 @@ class TaskController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'projectId' => 'required|integer|exists:Project,id',
-            'assignedTo' => 'nullable|integer|exists:Account,id',
+            'assignedTo' => 'nullable|array',
+            'assignedTo.id' => 'required_with:assignedTo|integer|exists:Account,id',
+            'assignedTo.login' => 'required_with:assignedTo|string',
             'dueDate' => 'nullable|date_format:Y-m-d',
             'status' => 'nullable|integer|exists:Status,id',
         ]);
@@ -42,7 +44,7 @@ class TaskController extends Controller
             'description' => $request->description,
             'projectId' => $request->projectId,
             'createdBy' => $user->id,
-            'assignedTo' => $request->assignedTo,
+            'assignedTo' => $request->assignedTo['id'] ?? null,
             'dueDate' => $request->dueDate,
             'status' => $statusId,
         ]);
@@ -61,7 +63,9 @@ class TaskController extends Controller
         $request->validate([
             'title' => 'sometimes|string|max:255',
             'description' => 'sometimes|string',
-            'assignedTo' => 'nullable|integer|exists:Account,id',
+            'assignedTo' => 'nullable|array',
+            'assignedTo.id' => 'required_with:assignedTo|integer|exists:Account,id',
+            'assignedTo.login' => 'required_with:assignedTo|string',
             'dueDate' => 'nullable|date_format:Y-m-d',
             'status' => 'nullable|integer|exists:Status,id',
         ]);
@@ -72,7 +76,13 @@ class TaskController extends Controller
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        $task->update($request->only(['title', 'description', 'assignedTo', 'dueDate', 'status']));
+        $data = $request->only(['title', 'description', 'dueDate', 'status']);
+
+        if (isset($request->assignedTo['id'])) {
+            $data['assignedTo'] = $request->assignedTo['id'];
+        }
+
+        $task->update($data);
 
         return response()->json($task, 200);
     }
@@ -110,6 +120,43 @@ class TaskController extends Controller
         $account = Account::findOrFail($accountId);
 
         $tasks = $account->assignedTasks()->with(['project', 'status'])->get();
+
+        $tasks->transform(function ($task) use ($account) {
+            $task->assignedTo = (object) [
+                'id' => $account->id,
+                'login' => $account->login,
+            ];
+            return $task;
+        });
+
+        return response()->json($tasks, 200);
+    }
+
+    public function getTasksWithoutCurrentUser(Request $request)
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['message' => 'User not authenticated'], 401);
+        }
+
+        $tasks = Task::where('assignedTo', '!=', $user->id)
+            ->orWhereNull('assignedTo')
+            ->with(['project', 'status', 'assignedToAccount'])
+            ->get();
+
+        $tasks->transform(function ($task) {
+            if ($task->assignedToAccount) {
+                $task->assignedTo = (object) [
+                    'id' => $task->assignedToAccount->id,
+                    'login' => $task->assignedToAccount->login,
+                ];
+            } else {
+                $task->assignedTo = null;
+            }
+            unset($task->assignedToAccount);
+            return $task;
+        });
 
         return response()->json($tasks, 200);
     }
