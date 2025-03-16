@@ -167,4 +167,29 @@ class TaskController extends Controller
 
         return response()->json($statuses, 200);
     }
+
+
+    public function updateStatus(Request $request, $id)
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['message' => 'User not authenticated'], 401);
+        }
+
+        $request->validate([
+            'status' => 'required|integer|exists:Status,id',
+        ]);
+
+        $task = Task::findOrFail($id);
+
+        if ($task->createdBy != $user->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $task->status = $request->status;
+        $task->save();
+
+        return response()->json($task, 200);
+    }
 }

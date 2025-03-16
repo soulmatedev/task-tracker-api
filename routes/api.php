@@ -25,7 +25,8 @@ Route::prefix('task')->group(function () {
     Route::put('/{id}', [TaskController::class, 'update']);
     Route::delete('/{id}', [TaskController::class, 'delete']);
     Route::get('/statuses', [TaskController::class, 'getStatuses']);
-    Route::get('/assigned/{accountId}', [TaskController::class, 'getTasksByAssignedTo']);
+    Route::patch('/{id}/status', [TaskController::class, 'updateStatus']);
+    Route::get('/assigned/{accountId}', [TaskController::class, 'getTasksByAssignedTo'])->middleware('auth:api');
     Route::get('/without-current-user', [TaskController::class, 'getTasksWithoutCurrentUser']);
 });
 
