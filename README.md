@@ -37,8 +37,13 @@
    `create.tables.tast-tracker` - распологается sql-файл для создания базы;
    `fill.tables.task-tracker` - данные для заполнения таблиц тестовыми данными.
    ```
+    ###### Также введите в консоль:
+    ```
+   php artisan make:migration create_cache_tables
+   php artisan migrate
+   ```
    
-5 Запустите сервер:
+6. Запустите сервер:
     ```
     composer serve
     ```
