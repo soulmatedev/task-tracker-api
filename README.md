@@ -30,7 +30,14 @@
    ```
    php artisan jwt:secret  
    ```
-
+   
+5. Миграции базы данных находятся database/migration
+    ###### В этой папке находятся два файла
+   ```
+   `create.tables.tast-tracker` - распологается sql-файл для создания базы;
+   `fill.tables.task-tracker` - данные для заполнения таблиц тестовыми данными.
+   ```
+   
 5 Запустите сервер:
     ```
     composer serve

@@ -46,8 +46,6 @@ class AuthController extends Controller
 
         $user = auth()->user();
 
-
-
         return response()->json([
             'access_token' => $token,
             'refresh_token' => $token,
